@@ -5,11 +5,16 @@ defmodule Advent2024 do
 
   def input() do
     File.read!("input.txt")
-    |> String.trim()
-    |> String.split("\r\n")
-    |> Enum.map(fn line ->
-      [first, second] = String.split(line, ~r{\s}, trim: true)
-      {String.to_integer(first), String.to_integer(second)}
-    end)
+    |> parse()
+  end
+
+  def parse(input, acc \\ [])
+
+  def parse("", acc) do
+    Enum.reverse(acc)
+  end
+
+  def parse(<<first::binary-size(5), "   ", second::binary-size(5), "\r\n", rest::binary>>, acc) do
+    parse(rest, [{String.to_integer(first), String.to_integer(second)} | acc])
   end
 end
