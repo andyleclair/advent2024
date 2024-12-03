@@ -98,53 +98,35 @@ defmodule Advent2024.Day02 do
       end
     end
 
-    def safe_lines(<<num::binary-size(unquote(size)), " ", rest::binary>>, buf, :increasing, acc) do
-      num = String.to_integer(num)
+    for direction <- [:increasing, :decreasing] do
+      def safe_lines(
+            <<num::binary-size(unquote(size)), " ", rest::binary>>,
+            buf,
+            unquote(direction),
+            acc
+          ) do
+        num = String.to_integer(num)
 
-      if safe?(:increasing, num, buf) do
-        safe_lines(rest, num, :increasing, acc)
-      else
-        unsafe_line(rest, acc)
+        if safe?(unquote(direction), num, buf) do
+          safe_lines(rest, num, unquote(direction), acc)
+        else
+          unsafe_line(rest, acc)
+        end
       end
-    end
 
-    def safe_lines(<<num::binary-size(unquote(size)), " ", rest::binary>>, buf, :decreasing, acc) do
-      num = String.to_integer(num)
+      def safe_lines(
+            <<num::binary-size(unquote(size)), "\r\n", rest::binary>>,
+            buf,
+            unquote(direction),
+            acc
+          ) do
+        num = String.to_integer(num)
 
-      if safe?(:decreasing, num, buf) do
-        safe_lines(rest, num, :decreasing, acc)
-      else
-        unsafe_line(rest, acc)
-      end
-    end
-
-    def safe_lines(
-          <<num::binary-size(unquote(size)), "\r\n", rest::binary>>,
-          buf,
-          :increasing,
-          acc
-        ) do
-      num = String.to_integer(num)
-
-      if safe?(:increasing, num, buf) do
-        safe_lines(rest, nil, nil, acc + 1)
-      else
-        safe_lines(rest, nil, nil, acc)
-      end
-    end
-
-    def safe_lines(
-          <<num::binary-size(unquote(size)), "\r\n", rest::binary>>,
-          buf,
-          :decreasing,
-          acc
-        ) do
-      num = String.to_integer(num)
-
-      if safe?(:decreasing, num, buf) do
-        safe_lines(rest, nil, nil, acc + 1)
-      else
-        safe_lines(rest, nil, nil, acc)
+        if safe?(unquote(direction), num, buf) do
+          safe_lines(rest, nil, nil, acc + 1)
+        else
+          safe_lines(rest, nil, nil, acc)
+        end
       end
     end
   end
